@@ -1,0 +1,1 @@
+https://us-central1-poem-5a71c.cloudfunctions.net/updateHighScore?uid=myuid&newScore=30

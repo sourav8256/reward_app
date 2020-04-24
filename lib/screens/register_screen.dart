@@ -1,26 +1,27 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:reward_game/screens/register_screen.dart';
-import 'package:reward_game/services/authentication.dart';
+import 'package:reward_game/screens/login_screen.dart';
 import 'package:reward_game/utilities/constants.dart';
 
-class LoginScreen extends StatefulWidget {
-  BaseAuth _baseAuth = new Auth();
-
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   bool _rememberMe = false;
+
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
-  void dispose() {
+  void dispose(){
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
 
     super.dispose();
   }
@@ -97,6 +98,42 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildConfirmPasswordTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Password',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextField(
+            controller: confirmPasswordController,
+            obscureText: true,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Colors.white,
+              ),
+              hintText: 'Confirm your Password',
+              hintStyle: kHintTextStyle,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
@@ -138,24 +175,20 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildRegisterBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => {
-          print('Login Button Pressed'),
-          widget._baseAuth
-              .signIn(emailController.text, passwordController.text),
-        },
+        onPressed: () => print('Register Button Pressed'),
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
         child: Text(
-          'LOGIN',
+          'REGISTER',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -168,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildSignInWithText() {
+  Widget _buildRegisterWithText() {
     return Column(
       children: <Widget>[
         Text(
@@ -180,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: 20.0),
         Text(
-          'Sign in with',
+          '',
           style: kLabelStyle,
         ),
       ],
@@ -217,19 +250,14 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-//          _buildSocialBtn(
-//            () => print('Login with Facebook'),
-//            AssetImage(
-//              'assets/logos/facebook.jpg',
-//            ),
-//          ),
           _buildSocialBtn(
-            () => {
-              print('Login with Google'),
-              widget._baseAuth.signInWithGoogle((){
-
-              })
-            },
+            () => print('Login with Facebook'),
+            AssetImage(
+              'assets/logos/facebook.jpg',
+            ),
+          ),
+          _buildSocialBtn(
+            () => print('Login with Google'),
             AssetImage(
               'assets/logos/google.jpg',
             ),
@@ -243,15 +271,14 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => print('Sign Up Button Pressed'),
       child: GestureDetector(
-        onTap: () => {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => RegisterScreen()))
+        onTap: ()=>{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()))
         },
         child: RichText(
           text: TextSpan(
             children: [
               TextSpan(
-                text: 'Don\'t have an Account? ',
+                text: 'Already have an Account? ',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
@@ -259,12 +286,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               TextSpan(
-                text: 'Sign Up',
+                text: 'Log In',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
+                recognizer: TapGestureRecognizer()..onTap = () => {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()))
+                }
               ),
             ],
           ),
@@ -325,11 +355,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      _buildConfirmPasswordTF(),
                       _buildForgotPasswordBtn(),
                       _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                      _buildSignInWithText(),
-                      _buildSocialBtnRow(),
+                      _buildRegisterBtn(),
+                      _buildRegisterWithText(),
+                      //_buildSocialBtnRow(),
                       _buildSignupBtn(),
                     ],
                   ),
